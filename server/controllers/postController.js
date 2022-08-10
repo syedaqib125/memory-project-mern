@@ -1,11 +1,11 @@
-import PostMessage from "../models/postMessage.js";
+import Posts from "../models/postModel.js";
 import mongoose from "mongoose";
 
 export const getPosts = async (req, res) => {
   try {
-    const postMessages = await PostMessage.find();
+    const posts = await Posts.find();
 
-    res.status(200).json(postMessages);
+    res.status(200).json(posts);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -14,7 +14,7 @@ export const getPosts = async (req, res) => {
 export const createPost = async (req, res) => {
   const post = req.body;
 
-  const newPost = new PostMessage({
+  const newPost = new Posts({
     ...post,
     creator: req.userId,
     createdAt: new Date().toISOString(),
@@ -36,7 +36,7 @@ export const updatePost = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send("No post with that id");
 
-  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+  const updatedPost = await Posts.findByIdAndUpdate(id, post, {
     new: true,
   });
 
@@ -49,7 +49,7 @@ export const deletePost = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send("No post with that id");
 
-  await PostMessage.findByIdAndRemove(id);
+  await Posts.findByIdAndRemove(id);
 
   res.json({ message: "Post deleted successfully" });
 };
@@ -62,7 +62,7 @@ export const likePost = async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send("No post with that id");
 
-  const post = await PostMessage.findById(id);
+  const post = await Posts.findById(id);
 
   const index = post.likes.findIndex((id) => id === String(req.userId));
 
@@ -72,7 +72,7 @@ export const likePost = async (req, res) => {
     post.likes = post.likes.filter((id) => id !== String(req.userId));
   }
 
-  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
+  const updatedPost = await Posts.findByIdAndUpdate(id, post, {
     new: true,
   });
   res.status(200).json(updatedPost);
