@@ -20,7 +20,7 @@ app.use('/user',userRoutes);
 
 
 app.get('/', (req, res) => {
-    res.send('Hello to memories API')
+    res.send('Hello to memories API new wala')
 })
 
 // const CONNECTION_URL = 'mongodb+srv://memory_project:memory_project123@cluster0.24khi.mongodb.net/memoryProject?retryWrites=true&w=majority'
