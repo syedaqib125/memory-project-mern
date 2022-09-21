@@ -10,6 +10,23 @@ export const getPosts = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+//QUERY -> /posts?page=1 -> page = 1
+//PARAMS -> /posts/123-> id = 123
+
+export const getPostsBySearch = async (req, res) => {
+  const { searchQuery, tags } = req.query;
+  try {
+    const title = new RegExp(searchQuery, "i"); // i, returns all the data on that title no matter how it is written (test,Test,TEST)
+    const posts = await Posts.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+      //find me all the posts that match one those two criteria title and second one
+      //is one of the tags in the array of tagsis equal to our tags
+    });
+    res.json({ data: posts });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 export const createPost = async (req, res) => {
   const post = req.body;
