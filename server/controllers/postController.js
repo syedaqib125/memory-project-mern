@@ -2,10 +2,28 @@ import Posts from "../models/postModel.js";
 import mongoose from "mongoose";
 
 export const getPosts = async (req, res) => {
+  const { page } = req.query;
   try {
-    const posts = await Posts.find();
+    const LIMIT = 8;
+    const startIndex = (Number(page) - 1) * LIMIT; //get the starting index of every page (1-1)*8=0
+    const total = await Posts.countDocuments({}); //count of how many documents/posts do we have
+    //sort({_id:-1}) this is going to give us the newest posts first
+    //skpi(startIndex) skip all the previous pages,
+    //if you are on the page 2 ypu dont want to fetch first 16 posts again
+    //you want to skip first eight
+    //we are going  to skip all the way the start index
+    const posts = await Posts.find()
+      .sort({ _id: -1 })
+      .limit(LIMIT)
+      .skip(startIndex);
 
-    res.status(200).json(posts);
+    res
+      .status(200)
+      .json({
+        data: posts,
+        currentPage: Number(page),
+        numberOfPages: Math.ceil(total / LIMIT),
+      }); //ceil(95/10)=9.5 after ceil it will be 10 pages
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

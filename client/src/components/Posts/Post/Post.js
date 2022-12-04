@@ -52,7 +52,7 @@ const Post = ({ post, setCurrentId }) => {
 
   // moment says 2 min ago 5sec ago and etc
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} elevation={6} raised>
       <CardMedia
         className={classes.media}
         image={post.selectedFile}
