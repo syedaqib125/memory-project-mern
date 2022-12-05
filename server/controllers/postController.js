@@ -17,13 +17,11 @@ export const getPosts = async (req, res) => {
       .limit(LIMIT)
       .skip(startIndex);
 
-    res
-      .status(200)
-      .json({
-        data: posts,
-        currentPage: Number(page),
-        numberOfPages: Math.ceil(total / LIMIT),
-      }); //ceil(95/10)=9.5 after ceil it will be 10 pages
+    res.status(200).json({
+      data: posts,
+      currentPage: Number(page),
+      numberOfPages: Math.ceil(total / LIMIT),
+    }); //ceil(95/10)=9.5 after ceil it will be 10 pages
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -32,7 +30,7 @@ export const getPosts = async (req, res) => {
 //PARAMS -> /posts/123-> id = 123
 
 export const getPostsBySearch = async (req, res) => {
-  const { searchQuery, tags } = req.query;
+  const { searchQuery, tags } = req.query; //after route name change it will work but dont know how
   try {
     const title = new RegExp(searchQuery, "i"); // i, returns all the data on that title no matter how it is written (test,Test,TEST)
     const posts = await Posts.find({
@@ -40,7 +38,17 @@ export const getPostsBySearch = async (req, res) => {
       //find me all the posts that match one those two criteria title and second one
       //is one of the tags in the array of tagsis equal to our tags
     });
-    res.json({ data: posts });
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const getPost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await Posts.findById(id);
+    res.status(200).json(post);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
