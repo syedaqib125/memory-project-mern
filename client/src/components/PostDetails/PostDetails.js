@@ -41,7 +41,10 @@ const PostDetails = () => {
     );
   }
 
-  const recomendedPosts = posts.filter(({ _id }) => _id === post._id);
+  const recomendedPosts = posts.filter(({ _id }) => _id !== post._id);
+
+  const openPost = (id) => history.push(`/posts/${id}`);
+
   return (
     <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
       <div className={classes.card}>
@@ -94,7 +97,25 @@ const PostDetails = () => {
           <div className={classes.recommendedPosts}>
             {recomendedPosts.map(
               ({ title, message, name, likes, selectedFile, _id }) => (
-                <div>{title}</div>
+                <div
+                  style={{ margin: "20px", cursor: "pointer" }}
+                  onClick={() => openPost(_id)}
+                  key={_id}
+                >
+                  <Typography gutterBottom variant="h6">
+                    {title}
+                  </Typography>
+                  <Typography gutterBottom variant="subtitle2">
+                    {name}
+                  </Typography>
+                  <Typography gutterBottom variant="subtitle2">
+                    {message}
+                  </Typography>
+                  <Typography gutterBottom variant="subtitle1">
+                    Likes: {likes.length}
+                  </Typography>
+                  <img src={selectedFile} width="200px" />
+                </div>
               )
             )}
           </div>
